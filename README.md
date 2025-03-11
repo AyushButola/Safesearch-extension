@@ -1,0 +1,1 @@
+# Safesearch-extension
