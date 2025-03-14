@@ -1,0 +1,31 @@
+{
+  "name":"Safe-search",
+  "version":"0.1",
+  "manifest_version":"3",
+  "discription":"provides a safe browsing experience",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "declarativeNetRequest",
+    "activeTab",
+    "contextMenus",
+    "storage",
+    "scripting",
+    "tabs",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+  {
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_start"
+  }
+  ],
+"background": {
+  "service_worker": "background.js"
+}
+
+}
