@@ -1,5 +1,4 @@
 
-
 function isHidden(el) {
   const style = window.getComputedStyle(el);
   const rect = el.getBoundingClientRect();
@@ -47,3 +46,4 @@ function hiddendata_check(){
   })
   return hiddendata;
 }
+
