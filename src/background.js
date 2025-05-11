@@ -15,94 +15,25 @@ chrome.webNavigation.onBeforeNavigate.addListener((details)=>{
     console.error("❌ API Error:", error);  })
 })
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.url) {
-    if (changeInfo.url.startsWith("http://")) {
-      chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        func: () => {
-          alert("⚠️ Warning: This site is not secure. (No HTTPS)");
-        }
+let threatPoints = 0;
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'addThreatPoints') {
+    threatPoints += message.points;
+    console.log(`Total Threat Points: ${threatPoints}`);
+
+    if (threatPoints >= 5) {
+      // You can replace this with a nicer notification later
+      chrome.notifications.create({
+        type: 'basic',
+        iconUrl: 'icon.png',
+        title: '⚠️ Unsafe Page Detected',
+        message: 'This site may be unsafe. Proceed with caution!'
       });
     }
-  }
-  if (changeInfo.status === 'complete' && tab.url) {
-    chrome.scripting.executeScript({
-      target: { tabId: tabId },
-      func: startMutationObserver
-    });
   }
 });
 
 
 
-function startMutationObserver(){
-  const observer=new MutationObserver(mutations=>{
-    mutations.forEach(mutation=>{
-      mutation.addedNodes.forEach(node=>{
-        console.log("Added node:", node); // Debugging log
-        if (node.tagName === 'FORM' || node.tagName === 'INPUT') {
-          if(isHidden(node)) alert("Warning: Hidden form added!");
-        }
-        if (node.tagName === 'SCRIPT') {
-          checkScriptInjection(node);
-        }
-        if (node.tagName === 'IFRAME') {
-          checkForClickjacking(node);
-        }
-        if (node.tagName === 'DIV' && node.style.zIndex === '99999') {
-          checkForOverlay(node); // Example: Detecting hidden overlays
-        }
-      });
-    });
-  });
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-}
-
-
-function checkScriptInjection(node){
-  if (!node.src) {
-    console.warn("⚠️ Inline script detected:", node);
-    alert("Warning: Inline script injected!");
-  }
-  else{
-    //to do later
-  }
-}
-
-function checkForClickjacking(node) {
-  if (
-    node.tagName === 'IFRAME' &&
-    (
-      node.style.visibility === 'hidden' ||
-      node.style.display === 'none' ||
-      node.style.opacity === '0' ||
-      node.width < 5 || node.height < 5
-    )
-  ) {
-    console.warn("⚠️ Suspicious iframe detected (possible clickjacking):", node);
-    alert("Warning: Hidden iframe detected — possible clickjacking!");
-  }
-}
-
-function checkForOverlay(node){
-  //to do later
-}
-
-function isHidden(el) {
-  console.log(el); // Check which element is being passed
-  const style = window.getComputedStyle(el);
-  const rect = el.getBoundingClientRect();
-  
-  return (
-    style.display === 'none' ||
-    style.visibility === 'hidden' ||
-    style.opacity === '0' ||
-    rect.width === 0 ||
-    rect.height === 0
-  );
-}
