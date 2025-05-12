@@ -5,7 +5,7 @@ function onDOMReady() {
 
   if(hiddenData.visibleFormHiddenPasswordField){
     chrome.runtime.sendMessage({
-      type: 'showHighSeverityAlert',
+      type: 'alert',
       message: '⚠️ Suspicious hidden password field in a visible form detected!',
     });
     chrome.runtime.sendMessage({ type: 'addThreatPoints', points: 4 });
