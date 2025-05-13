@@ -1,12 +1,11 @@
 function onDOMReady() {
   startMutationObserver();
-  
   const hiddenData = hiddendata_check();
 
   if(hiddenData.visibleFormHiddenPasswordField){
     chrome.runtime.sendMessage({
       type: 'alert',
-      message: '⚠️ Suspicious hidden password field in a visible form detected!',
+      details: '⚠️ Suspicious hidden password field in a visible form detected!',
     });
     chrome.runtime.sendMessage({ type: 'addThreatPoints', points: 4 });
   }
@@ -24,4 +23,5 @@ if (document.readyState === "loading") {
 } else {
   onDOMReady();
 }
+
 

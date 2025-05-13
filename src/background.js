@@ -5,28 +5,22 @@
 
 let threatPoints = 0;
 
+function determineGrade(score){
+  if(score<6) return 'B';
+  else if(score<12) return 'A';
+  else return 'S';
+  
+}
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'addThreatPoints') {
     threatPoints += message.points;
     console.log(`Total Threat Points: ${threatPoints}`);
-    grade=determineGrade(threatPoints,20);//on the grade will be show in ui;
-    if (threatPoints >= 5) {
-      // for testing purpose;
-      chrome.notifications.create({
-        type: 'basic',
-        iconUrl: 'icon.png',
-        title: '⚠️ Unsafe Page Detected',
-        message: 'This site may be unsafe. Proceed with caution!'
-      });
-    }
+    grade=determineGrade(threatPoints);//on the grade will be show in ui;
+    console.log(grade);
   }
   if(message.type=='alert'){
-    chrome.notifications.create({
-      type:'basic',
-      iconUrl:'icon.png',
-      title:'alert',
-      message:message.details
-    })
+    console.log(message.details);
   }
 });
 

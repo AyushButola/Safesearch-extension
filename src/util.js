@@ -92,7 +92,6 @@ function check_dynamic_form(form){
 function startMutationObserver() {
   const DEBOUNCE_DELAY = 500;
   let timeoutId;
-
   const observer = new MutationObserver(mutations => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
@@ -134,7 +133,8 @@ function startMutationObserver() {
           }
         });
       });
-      chrome.runtime.sendMessage({ type: 'addThreatPoints', points: clickJackingScore+scriptInjectionScore+inputScore+formScore });
+      score=clickJackingScore+scriptInjectionScore+inputScore+formScore
+      chrome.runtime.sendMessage({ type: 'addThreatPoints', points: score });
     }, DEBOUNCE_DELAY);
   });
 
@@ -219,7 +219,7 @@ function checkScriptInjection(node) {
     suspiciousContent: false
   };
 
-  if (node.src) {
+  if (!node.src) {
     // Analyze inline script content
     const scriptContent = node.textContent.toLowerCase();
     hasSusContent = /(?:document\.cookie|localStorage|XMLHttpRequest)/.test(scriptContent);
