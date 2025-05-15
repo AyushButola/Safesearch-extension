@@ -99,6 +99,8 @@ function startMutationObserver() {
       let formScore=0;
       let scriptInjectionScore=0;
       let inputScore=0;
+
+      //to do later: recursively check all the child of the added elment for nested elements
       mutations.forEach(({ addedNodes }) => {
         addedNodes.forEach(node => {
           if (!(node instanceof HTMLElement)) return;
@@ -149,6 +151,7 @@ function startMutationObserver() {
 // Enhanced clickjacking detection
 function checkForClickjacking(node) {
   if (node.tagName !== 'IFRAME') return;
+  if (node.id === 'safe-search-warning-banner') return;
 
   const style = window.getComputedStyle(node);
   const rect = node.getBoundingClientRect();
@@ -258,7 +261,14 @@ function checkScriptInjection(node) {
   }
 }
 
+function injectWarningBanner() {
+  const iframe = document.createElement('iframe');
+  iframe.src = chrome.runtime.getURL('ui/notifications.html');
+  iframe.id='safe-search-warning-banner';
+  document.body.prepend(iframe);
 
+  document.body.prepend(iframe);
+}
 
 
 

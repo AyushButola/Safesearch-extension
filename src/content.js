@@ -3,6 +3,7 @@ function onDOMReady() {
   const hiddenData = hiddendata_check();
 
   if(hiddenData.visibleFormHiddenPasswordField){
+    injectWarningBanner()
     chrome.runtime.sendMessage({
       type: 'alert',
       details: '⚠️ Suspicious hidden password field in a visible form detected!',
