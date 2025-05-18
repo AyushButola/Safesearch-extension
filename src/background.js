@@ -24,6 +24,34 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+function injectGradeBadge(grade) {
+  let badge = document.getElementById("threat-grade-badge");
+  if (!badge) {
+    badge = document.createElement("div");
+    badge.id = "threat-grade-badge";
+    badge.style.position = "fixed";
+    badge.style.bottom = "10px";
+    badge.style.left = "10px";
+    badge.style.width = "40px";
+    badge.style.height = "40px";
+    badge.style.borderRadius = "50%";
+    badge.style.backgroundColor = getColorForGrade(grade);
+    badge.style.zIndex = 99999;
+    badge.style.display = "flex";
+    badge.style.alignItems = "center";
+    badge.style.justifyContent = "center";
+    badge.style.color = "#fff";
+    badge.style.fontWeight = "bold";
+    badge.style.fontFamily = "Arial";
+    badge.innerText = grade;
+    document.body.appendChild(badge);
+  } else {
+    badge.style.backgroundColor = getColorForGrade(grade);
+    badge.innerText = grade;
+  }
+}
+
+
 
 
 
