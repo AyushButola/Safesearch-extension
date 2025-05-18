@@ -265,9 +265,16 @@ function injectWarningBanner() {
   const iframe = document.createElement('iframe');
   iframe.src = chrome.runtime.getURL('ui/notifications.html');
   iframe.id='safe-search-warning-banner';
-  document.body.prepend(iframe);
-
-  document.body.prepend(iframe);
+  iframe.style.width = "30%";
+  iframe.style.height = "20%";
+  iframe.style.border = "none";
+  iframe.style.position="absolute";
+  iframe.style.top=0;
+  iframe.style.right=0;
+  iframe.style.overflow="hidden";
+  iframe.style.borderRadius="6px";
+  iframe.scrolling="no";
+  document.body.prepend(iframe);S
 }
 
 
