@@ -110,6 +110,7 @@ function startMutationObserver() {
             case 'FORM':
               info=check_dynamic_form(node);
               if(info.visibleFormHiddenPasswordField){
+                injectWarningBanner('Suspicious hidden password field in a visible form detected!');
                 chrome.runtime.sendMessage({
                   type: 'alert',
                   message: '⚠️ Suspicious hidden password field in a visible form detected!',
@@ -228,6 +229,7 @@ function checkScriptInjection(node) {
     hasSusContent = /(?:document\.cookie|localStorage|XMLHttpRequest)/.test(scriptContent);
     
     if(hasSusContent) {
+      injectWarningBanner("Inline script with suspicious content was added");
       chrome.runtime.sendMessage({
         type: 'alert',
         details: "Inline script with suspicious content was added"
@@ -246,6 +248,7 @@ function checkScriptInjection(node) {
       
       if (!isTrusted) {
         if(isSuspiciousDomain(srcUrl.href)){
+          injectWarningBanner("script with unknown source was added");
           chrome.runtime.sendMessage({
             type:'alert',
             details:'script with unknown source was added'
@@ -261,21 +264,29 @@ function checkScriptInjection(node) {
   }
 }
 
-function injectWarningBanner() {
-  const iframe = document.createElement('iframe');
-  iframe.src = chrome.runtime.getURL('ui/notifications.html');
-  iframe.id='safe-search-warning-banner';
-  iframe.style.width = "30%";
-  iframe.style.height = "20%";
-  iframe.style.border = "none";
-  iframe.style.position="absolute";
-  iframe.style.top=0;
-  iframe.style.right=0;
-  iframe.style.overflow="hidden";
-  iframe.style.borderRadius="6px";
-  iframe.scrolling="no";
-  document.body.prepend(iframe);S
+function injectWarningBanner(text) {
+  const banner = document.createElement('div');
+  banner.innerText = `⚠️ Warning: ${text}`;
+  banner.id = 'safe-search-warning-banner';
+  banner.style.position = 'fixed';
+  banner.style.top = '10px';
+  banner.style.right = '10px';
+  banner.style.backgroundColor = '#fff3cd';
+  banner.style.color = '#856404';
+  banner.style.border = '2px solid #ffeeba';
+  banner.style.borderRadius = '6px';
+  banner.style.padding = '10px 20px';
+  banner.style.zIndex = 999999;
+  banner.style.boxShadow = '0 0 10px rgba(0,0,0,0.2)';
+  banner.style.fontFamily = 'Arial, sans-serif';
+  banner.style.fontSize = '14px';
+
+  document.body.appendChild(banner);
+  setTimeout(()=>{
+    banner.remove();
+  },4000);
 }
+
 
 
 
