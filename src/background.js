@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log(message.details);
   }
 });
-
+console.log("hi");
 function injectGradeBadge(grade) {
   let badge = document.getElementById("threat-grade-badge");
   if (!badge) {
@@ -55,3 +55,30 @@ function injectGradeBadge(grade) {
 
 
 
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "ready") {
+    fetch("http://127.0.0.1:5000/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: message.url })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      sendResponse({
+        type: "result",
+        result: data.result,
+        url: message.url
+      });
+    })
+    .catch(err => {
+      console.error("API call failed:", err);
+      sendResponse({ type: "error", error: err.toString() });
+    });
+
+    // Required to keep the message channel open for async response
+    return true;
+  }
+});

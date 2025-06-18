@@ -13,7 +13,8 @@
     "scripting",
     "tabs",
     "webNavigation",
-    "declarativeNetRequestWithHostAccess"
+    "declarativeNetRequestWithHostAccess",
+    "<all_urls>"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -22,7 +23,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["src/util.js","src/content.js"],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     }
   ],
   "background": {

@@ -1,3 +1,37 @@
+
+chrome.runtime.sendMessage({ type: "ready", url: window.location.href }, (response) => {
+  if (response?.type === "result") {
+    if (response.result === "malicious") {
+      showWarningModal(response.url);
+    } else {
+      console.log("Site is safe");
+    }
+  } else {
+    console.warn("Unexpected response from background:", response);
+  }
+});
+
+
+function showWarningModal(url) {
+  const modal = document.createElement("div");
+  modal.innerHTML = `
+    <div style="position:fixed; top:0; left:0; width:100%; height:100%;
+                background:rgba(0,0,0,0.8); color:white; z-index:99999;
+                display:flex; align-items:center; justify-content:center;">
+      <div style="background:#222; padding:20px; border-radius:10px; max-width:400px; text-align:center;">
+        <h2>⚠️ Malicious Site Detected</h2>
+        <p>${url} flagged as malicious</p>
+        <button onclick="this.parentElement.parentElement.remove()">Dismiss</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+
+
+
+
+
 function onDOMReady() {
   startMutationObserver();
   const hiddenData = hiddendata_check();
@@ -24,6 +58,9 @@ if (document.readyState === "loading") {
 } else {
   onDOMReady();
 }
+
+
+
 
 
 
@@ -238,4 +275,12 @@ if (document.readyState === "loading") {
     return originalSend.apply(this, arguments);
   };
 })();
+
+
+
+
+
+
+
+
 
