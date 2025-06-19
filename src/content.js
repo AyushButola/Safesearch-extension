@@ -21,12 +21,33 @@ function showWarningModal(url) {
       <div style="background:#222; padding:20px; border-radius:10px; max-width:400px; text-align:center;">
         <h2>⚠️ Malicious Site Detected</h2>
         <p>${url} flagged as malicious</p>
-        <button onclick="this.parentElement.parentElement.remove()">Dismiss</button>
+        <button id="dismiss-btn">Dismiss & Whitelist</button>
       </div>
     </div>`;
+  
   document.body.appendChild(modal);
-}
 
+  // Add event listener after element is in DOM
+  document.getElementById("dismiss-btn").addEventListener("click", () => {
+    fetch("http://localhost:5000/add_safe_domain", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ url })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Backend response:", data);
+    })
+    .catch(error => {
+      console.error("Error adding to whitelist:", error);
+    });
+
+    // Remove modal after sending
+    modal.remove();
+  });
+}
 
 
 
