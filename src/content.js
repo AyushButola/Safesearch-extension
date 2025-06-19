@@ -277,48 +277,53 @@ if (document.readyState === "loading") {
 })();
 
 
-//shadow boxing the cookie
+shadow boxing the cookie
 
-// (function monitorCookieAccess() {
-//   const originalCookieDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
-//                                    Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
+(function monitorCookieAccess() {
+  const originalCookieDescriptor = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
+                                   Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
 
-//   if (!originalCookieDescriptor) return;
+  if (!originalCookieDescriptor) return;
 
-//   Object.defineProperty(document, 'cookie', {
-//     configurable: true,
-//     enumerable: true,
+  Object.defineProperty(document, 'cookie', {
+    configurable: true,
+    enumerable: true,
     
-//     get: function () {
-//       chrome.runtime?.sendMessage?.({
-//         type: 'alert',
-//         details: '⚠️ Suspicious access to document.cookie detected (read)'
-//       });
-//       injectWarningBanner('Script tried to READ document.cookie!');
-//       console.warn('[SafeSearch] ⚠️ document.cookie read access detected');
-//       return originalCookieDescriptor.get.call(document);
-//     },
+    get: function () {
+      chrome.runtime?.sendMessage?.({
+        type: 'alert',
+        details: '⚠️ Suspicious access to document.cookie detected (read)'
+      });
+      injectWarningBanner('Script tried to READ document.cookie!');
+      console.warn('[SafeSearch] ⚠️ document.cookie read access detected');
+      return originalCookieDescriptor.get.call(document);
+    },
     
-//     set: function (val) {
-//       chrome.runtime?.sendMessage?.({
-//         type: 'alert',
-//         details: `⚠️ Script tried to set document.cookie → ${val}`
-//       });
+    set: function (val) {
+      chrome.runtime?.sendMessage?.({
+        type: 'alert',
+        details: `⚠️ Script tried to set document.cookie → ${val}`
+      });
 
-//       injectWarningBanner(`Script tried to SET document.cookie → ${val}`);
-//       console.warn('[SafeSearch] ⚠️ document.cookie write attempt:', val);
+      injectWarningBanner(`Script tried to SET document.cookie → ${val}`);
+      console.warn('[SafeSearch] ⚠️ document.cookie write attempt:', val);
 
-//       // Optionally, score risk based on what is being written
-//       if (/session|token|auth|jwt/i.test(val)) {
-//         chrome.runtime.sendMessage({ type: 'addThreatPoints', points: 3 });
-//       } else {
-//         chrome.runtime.sendMessage({ type: 'addThreatPoints', points: 1 });
-//       }
+      // Optionally, score risk based on what is being written
+      if (/session|token|auth|jwt/i.test(val)) {
+        chrome.runtime.sendMessage({ type: 'addThreatPoints', points: 3 });
+      } else {
+        chrome.runtime.sendMessage({ type: 'addThreatPoints', points: 1 });
+      }
 
-//       return originalCookieDescriptor.set.call(document, val);
-//     }
-//   });
-// })();
+      return originalCookieDescriptor.set.call(document, val);
+    }
+  });
+})();
+
+
+
+
+
 
 
 
